@@ -1,0 +1,54 @@
+{% extends 'admin/base_site.html' %}
+
+{% block content %}
+<h1>THỐNG KÊ ĐỊA ĐIỂM ĂN UỐNG</h1>
+
+<ul>
+    {% for c in stats %}
+    <li><strong>{{ c.name }}</strong>: {{ c.count }}</li>
+    {% endfor %}
+</ul>
+<canvas id="myChart"></canvas>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        let values = [];
+        let labels = [];  // Khai báo labels
+
+        {% for c in stats %}
+        values.push({{ c.count }});
+        labels.push('{{ c.name|escapejs }}');  // Thoát JS để tránh vấn đề với dấu nháy
+        {% endfor %}
+
+        const ctx = document.getElementById('myChart');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: '# của Địa Điểm',
+                    data: values,
+                    borderWidth: 1,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 205, 86, 0.2)',
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 205, 86, 1)',
+                    ],
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}
